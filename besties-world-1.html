@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bestie's World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Sparkling Royal Blue */
+      --blue-deep:   #05102e;
+      --blue-navy:   #0b1d57;
+      --blue-royal:  #1535a0;
+      --blue-bright: #2a5ce8;
+      --blue-mid:    #3d6ef0;
+      --blue-light:  #b8cdf8;
+      --blue-pale:   #e8eeff;
+      --blue-glass:  rgba(21,53,160,0.12);
+
+      /* Gold & Pink */
+      --gold:        #f0c040;
+      --gold-light:  #f8dc80;
+      --gold-deep:   #c8900a;
+      --pink:        #f060a0;
+      --pink-light:  #f8a8cc;
+      --pink-pale:   #fde8f3;
+      --pink-deep:   #c03070;
+
+      /* Neutrals */
+      --dark:        #04091f;
+      --white:       #fdfeff;
+      --card-bg:     #f0f4ff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--white); color: var(--dark); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    /* ═══════════════════════════════════
+       SPARKLE OVERLAY (global shimmer)
+    ═══════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(circle 1px at 10% 20%, rgba(240,192,64,0.6) 0%, transparent 100%),
+        radial-gradient(circle 1px at 30% 55%, rgba(240,96,160,0.5) 0%, transparent 100%),
+        radial-gradient(circle 1px at 55% 15%, rgba(248,220,128,0.55) 0%, transparent 100%),
+        radial-gradient(circle 1px at 75% 40%, rgba(240,192,64,0.45) 0%, transparent 100%),
+        radial-gradient(circle 1px at 90% 70%, rgba(240,96,160,0.4) 0%, transparent 100%),
+        radial-gradient(circle 1px at 20% 80%, rgba(248,220,128,0.5) 0%, transparent 100%),
+        radial-gradient(circle 1px at 65% 88%, rgba(240,192,64,0.4) 0%, transparent 100%);
+      opacity: 0.4;
+    }
+
+    /* ══════════ NAV ══════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 16px 44px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,16,46,0.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(240,192,64,0.22);
+      box-shadow: 0 2px 30px rgba(21,53,160,0.3);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.35rem; font-weight: 700;
+      background: linear-gradient(90deg, var(--gold), var(--pink-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a {
+      font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--blue-light); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ══════════ HERO ══════════ */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 20px 80px;
+      background: linear-gradient(160deg, var(--blue-deep) 0%, var(--blue-navy) 30%, var(--blue-royal) 65%, #1e45c0 100%);
+    }
+
+    /* animated sparkle stars */
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 10%, rgba(240,192,64,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 60% at 5% 80%,  rgba(240,96,160,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(42,92,232,0.2)   0%, transparent 70%);
+    }
+    .hero::after {
+      content: '✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦';
+      position: absolute; top: 0; left: -40px; right: -40px;
+      font-size: 0.55rem; letter-spacing: 1.4rem; line-height: 3.5rem;
+      color: rgba(240,192,64,0.12); pointer-events: none; white-space: normal;
+      word-break: break-all; padding: 20px;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+
+    /* floating petals */
+    .petal { position: absolute; border-radius: 50% 0 50% 0; animation: drift linear infinite; }
+    @keyframes drift {
+      0%   { transform: translateY(-80px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.2; } 90% { opacity: 0.06; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .brand-tag {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(0.8rem, 2vw, 0.95rem); letter-spacing: 0.4em;
+      color: var(--gold-light); text-transform: uppercase; margin-bottom: 18px;
+      opacity: 0; animation: fadeUp 0.9s 0.3s ease forwards; position: relative; z-index: 1;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(3rem, 10vw, 7.5rem); line-height: 0.92;
+      color: #fff; letter-spacing: -0.02em;
+      opacity: 0; animation: fadeUp 1s 0.5s ease forwards; position: relative; z-index: 1;
+      text-shadow: 0 0 80px rgba(42,92,232,0.4), 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .hero-title span {
+      display: block; font-style: italic; font-weight: 400;
+      font-size: clamp(1.8rem, 6vw, 4.8rem);
+      background: linear-gradient(100deg, var(--gold) 0%, var(--pink-light) 50%, var(--gold-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(240,192,64,0.5));
+    }
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 300; color: var(--blue-light); margin-top: 20px;
+      max-width: 500px; line-height: 1.75;
+      opacity: 0; animation: fadeUp 1s 0.8s ease forwards; position: relative; z-index: 1;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+      margin-top: 44px;
+      opacity: 0; animation: fadeUp 1s 1s ease forwards; position: relative; z-index: 1;
+    }
+    .stat-item {
+      display: flex; flex-direction: column; align-items: center;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(240,192,64,0.28);
+      border-radius: 18px; padding: 16px 24px; min-width: 132px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 24px rgba(21,53,160,0.2), inset 0 1px 0 rgba(240,192,64,0.15);
+      transition: transform 0.3s;
+    }
+    .stat-item:hover { transform: translateY(-4px); }
+    .stat-number {
+      font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 900;
+      background: linear-gradient(90deg, var(--gold), var(--pink-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.1; filter: drop-shadow(0 0 8px rgba(240,192,64,0.4));
+    }
+    .stat-label {
+      font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--blue-light); margin-top: 5px; font-weight: 400;
+    }
+
+    /* ── HERO CTA ── */
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      margin-top: 40px;
+      opacity: 0; animation: fadeUp 1s 1.2s ease forwards; position: relative; z-index: 1;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink), var(--gold));
+      color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: 0.95rem; letter-spacing: 0.05em; padding: 17px 38px;
+      border-radius: 60px; text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 6px 30px rgba(240,96,160,0.45), 0 0 0 1px rgba(240,192,64,0.2);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(240,96,160,0.6), 0 0 0 1px rgba(240,192,64,0.35); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1.5px solid rgba(240,192,64,0.5); color: var(--gold-light);
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 0.95rem;
+      padding: 17px 38px; border-radius: 60px; text-decoration: none;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .btn-ghost:hover { background: rgba(240,192,64,0.1); border-color: var(--gold); color: #fff; }
+
+    /* ══════════ SECTION DIVIDER ══════════ */
+    .divider { text-align: center; padding: 70px 20px 0; }
+    .divider-line { display: flex; align-items: center; justify-content: center; gap: 16px; max-width: 380px; margin: 0 auto 16px; }
+    .divider-line::before, .divider-line::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--pink), var(--gold), transparent);
+    }
+    .divider-icon { font-size: 1.4rem; }
+    .divider h2 {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700; line-height: 1.2;
+      background: linear-gradient(135deg, var(--blue-royal), var(--blue-bright));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .divider p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #5060a0; margin-top: 10px; font-style: italic; }
+
+    /* ══════════ SERVICES ══════════ */
+    .services { padding: 50px 24px 90px; max-width: 1100px; margin: 0 auto; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 50px; }
+    .service-card {
+      background: linear-gradient(145deg, #fff 0%, var(--blue-pale) 100%);
+      border-radius: 22px; padding: 36px 28px;
+      border: 1px solid rgba(21,53,160,0.1);
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 20px rgba(21,53,160,0.06);
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+      transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
+    }
+    .service-card::after {
+      content: '✦'; position: absolute; bottom: 14px; right: 18px;
+      font-size: 0.7rem; color: rgba(240,192,64,0.25); transition: opacity 0.3s;
+    }
+    .service-card:hover { transform: translateY(-7px); box-shadow: 0 24px 70px rgba(21,53,160,0.14), 0 0 0 1px rgba(240,192,64,0.1); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover::after { color: rgba(240,192,64,0.6); }
+    .card-icon { font-size: 2.6rem; margin-bottom: 16px; display: block; }
+    .card-title {
+      font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700;
+      color: var(--blue-royal); margin-bottom: 10px;
+    }
+    .card-desc { font-size: 0.92rem; color: #3a4a80; line-height: 1.68; }
+
+    /* ══════════ LEARN BANNER ══════════ */
+    .learn-section { padding: 0 24px 0; }
+    .learn-banner {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-navy) 40%, var(--blue-royal) 80%, #1e45c0 100%);
+      border-radius: 28px; max-width: 1052px; margin: 0 auto;
+      padding: 56px 52px 44px;
+      position: relative; overflow: hidden;
+    }
+    .learn-banner::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 80% at 95% 50%, rgba(240,96,160,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 5%  20%, rgba(240,192,64,0.12) 0%, transparent 55%);
+    }
+    /* sparkle dots */
+    .learn-banner::after {
+      content: '✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦'; position: absolute;
+      top: 18px; right: 30px; font-size: 0.5rem; letter-spacing: 1.2rem;
+      color: rgba(240,192,64,0.3); pointer-events: none;
+    }
+    .learn-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap; position: relative; z-index: 1;
+    }
+    .learn-text h3 {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 900; color: #fff; line-height: 1.2;
+      text-shadow: 0 0 40px rgba(42,92,232,0.4);
+    }
+    .learn-text p {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.12rem;
+      color: var(--blue-light); margin-top: 10px; font-style: italic;
+      max-width: 460px; line-height: 1.65;
+    }
+    .learn-badge {
+      display: inline-block; margin-top: 18px;
+      background: rgba(240,192,64,0.15);
+      border: 1.5px solid rgba(240,192,64,0.5);
+      color: var(--gold-light); font-weight: 500; font-size: 0.85rem;
+      letter-spacing: 0.1em; padding: 9px 22px; border-radius: 40px;
+      text-transform: uppercase;
+    }
+
+    /* ── TRAINING PACKAGES ── */
+    .training-packages {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px; margin-top: 40px; position: relative; z-index: 1;
+    }
+    .pkg-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px; padding: 28px 22px;
+      backdrop-filter: blur(10px);
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .pkg-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+    }
+    .pkg-card.featured {
+      background: rgba(240,192,64,0.1);
+      border-color: rgba(240,192,64,0.4);
+      box-shadow: 0 8px 40px rgba(240,96,160,0.2), 0 0 0 1px rgba(240,192,64,0.2);
+    }
+    .pkg-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.12); box-shadow: 0 16px 50px rgba(21,53,160,0.3); }
+    .pkg-ribbon {
+      position: absolute; top: 14px; right: -22px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+      color: #fff; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em;
+      padding: 4px 30px; transform: rotate(35deg); text-transform: uppercase;
+    }
+    .pkg-duration {
+      font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 900;
+      background: linear-gradient(90deg, var(--gold), var(--pink-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .pkg-name {
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 14px;
+    }
+    .pkg-desc { font-size: 0.88rem; color: rgba(200,216,248,0.85); line-height: 1.6; }
+    .pkg-features { list-style: none; margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+    .pkg-features li { font-size: 0.83rem; color: rgba(200,216,248,0.9); display: flex; align-items: flex-start; gap: 7px; }
+    .pkg-features li::before { content: '✦'; color: var(--gold); font-size: 0.55rem; margin-top: 3px; flex-shrink: 0; }
+    .pkg-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 20px; padding: 11px 22px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+      color: #fff; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.05em;
+      border-radius: 40px; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(240,96,160,0.35);
+    }
+    .pkg-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(240,96,160,0.5); }
+
+    /* ══════════ RESERVE SECTION ══════════ */
+    .reserve-section {
+      padding: 90px 24px;
+      background: linear-gradient(160deg, var(--blue-pale) 0%, #faf0ff 50%, #fff0f8 100%);
+      position: relative; overflow: hidden;
+    }
+    .reserve-section::before {
+      content: '✦'; font-size: 9rem; color: rgba(240,192,64,0.06);
+      position: absolute; right: -20px; bottom: -40px; pointer-events: none;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+    .reserve-section::after {
+      content: '✦'; font-size: 7rem; color: rgba(240,96,160,0.06);
+      position: absolute; left: -10px; top: 40px; pointer-events: none;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .reserve-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+    .reserve-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink), var(--gold));
+      color: #fff; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 8px 22px; border-radius: 40px; margin-bottom: 22px;
+      box-shadow: 0 4px 20px rgba(240,96,160,0.4);
+    }
+    .reserve-title {
+      font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900; line-height: 1.15; margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--blue-royal), var(--blue-bright));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .reserve-title em { font-style: italic; background: linear-gradient(90deg, var(--pink), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .reserve-subtitle {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.15rem; color: #4a60a0; margin-bottom: 44px; line-height: 1.65;
+    }
+    .form-card {
+      background: #fff;
+      border-radius: 26px;
+      padding: 48px 44px;
+      box-shadow: 0 20px 80px rgba(21,53,160,0.1), 0 4px 20px rgba(240,96,160,0.06);
+      border: 1px solid rgba(240,192,64,0.18);
+      position: relative; overflow: hidden;
+    }
+    .form-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--blue-royal), var(--pink), var(--gold));
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+    .form-group label {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+      background: linear-gradient(90deg, var(--blue-royal), var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      border: 1.5px solid rgba(21,53,160,0.15);
+      border-radius: 13px; padding: 13px 16px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--dark);
+      background: var(--blue-pale); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(240,96,160,0.12);
+      background: #fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231535a0' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+    .submit-btn {
+      width: 100%; padding: 19px;
+      background: linear-gradient(135deg, var(--blue-navy), var(--blue-royal), var(--blue-bright));
+      color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: 1rem; letter-spacing: 0.05em;
+      border: none; border-radius: 60px; cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 6px 28px rgba(21,53,160,0.4);
+      margin-top: 6px; position: relative; overflow: hidden;
+    }
+    .submit-btn::after { content: ' ✦'; opacity: 0.7; }
+    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(21,53,160,0.5), 0 0 0 1px rgba(240,192,64,0.3); }
+    .form-note { text-align: center; margin-top: 16px; font-size: 0.82rem; color: #8090c0; font-family: 'Cormorant Garamond', serif; font-style: italic; }
+    .success-msg { display: none; text-align: center; padding: 44px 20px; }
+    .success-msg .check { font-size: 3.5rem; margin-bottom: 16px; }
+    .success-msg h3 { font-family: 'Playfair Display', serif; font-size: 1.9rem; background: linear-gradient(90deg, var(--blue-royal), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+    .success-msg p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: #5060a0; }
+
+    /* ══════════ CONTACT ══════════ */
+    .contact-section { text-align: center; padding: 80px 24px 100px; }
+    .wa-btn {
+      display: inline-flex; align-items: center; gap: 14px;
+      background: #25D366; color: #fff; font-family: 'DM Sans', sans-serif;
+      font-weight: 600; font-size: 1.05rem; padding: 20px 52px;
+      border-radius: 60px; text-decoration: none;
+      box-shadow: 0 8px 40px rgba(37,211,102,0.35);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .wa-btn:hover { transform: translateY(-4px); box-shadow: 0 16px 56px rgba(37,211,102,0.5); }
+    .wa-icon { width: 28px; height: 28px; flex-shrink: 0; }
+
+    /* ══════════ FOOTER ══════════ */
+    footer {
+      background: var(--blue-deep);
+      border-top: 1px solid rgba(240,192,64,0.15);
+      color: rgba(184,205,248,0.6);
+      text-align: center; padding: 36px 20px;
+      font-size: 0.85rem; font-family: 'Cormorant Garamond', serif;
+      font-style: italic; letter-spacing: 0.04em;
+    }
+    footer strong {
+      background: linear-gradient(90deg, var(--gold), var(--pink-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-style: normal;
+    }
+    footer a { color: var(--gold-light); text-decoration: none; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 640px) {
+      nav { padding: 14px 20px; } .nav-links { display: none; }
+      .learn-banner { padding: 36px 24px 36px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-card { padding: 30px 20px; }
+      .stat-item { min-width: 110px; padding: 12px 14px; }
+      .training-packages { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 420px) { .training-packages { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Bestie's World</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#learn">Training</a></li>
+    <li><a href="#reserve">Reserve</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="petal" style="width:55px;height:55px;background:var(--gold);top:-55px;left:12%;animation-duration:9s;animation-delay:0s;"></div>
+  <div class="petal" style="width:38px;height:38px;background:var(--pink);top:-38px;left:52%;animation-duration:12s;animation-delay:2s;"></div>
+  <div class="petal" style="width:70px;height:70px;background:var(--pink-light);top:-70px;left:78%;animation-duration:10s;animation-delay:1s;"></div>
+  <div class="petal" style="width:30px;height:30px;background:var(--gold-light);top:-30px;left:33%;animation-duration:15s;animation-delay:4s;"></div>
+  <div class="petal" style="width:50px;height:50px;background:var(--pink);top:-50px;left:68%;animation-duration:11s;animation-delay:3s;"></div>
+  <div class="petal" style="width:42px;height:42px;background:var(--gold);top:-42px;left:88%;animation-duration:13s;animation-delay:5s;"></div>
+
+  <p class="brand-tag">✦ Where every moment is celebrated ✦</p>
+  <h1 class="hero-title">Bestie's <span>World</span></h1>
+  <p class="hero-sub">Cakes that wow. Gifts that speak. Surprises that last a lifetime — crafted with love, delivered with heart.</p>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">1000+</span>
+      <span class="stat-label">Happy Clients</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">100+</span>
+      <span class="stat-label">Styles for Every Event</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">⭐ 5.0</span>
+      <span class="stat-label">Star Rating</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">8 Yrs</span>
+      <span class="stat-label">of Experience</span>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="https://wa.me/2349032606743?text=Hello%20Bestie's%20World%2C%20I'd%20like%20to%20make%20an%20order!" class="btn-primary" target="_blank">
+      💬 Order on WhatsApp
+    </a>
+    <a href="#reserve" class="btn-ghost">Reserve Your Spot ↓</a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="divider reveal">
+    <div class="divider-line"><span class="divider-icon">🎂</span></div>
+    <h2>What We Do Best</h2>
+    <p>Six ways we make your moments unforgettable</p>
+  </div>
+  <div class="services">
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <span class="card-icon">🎂</span>
+        <h3 class="card-title">Cake Baking</h3>
+        <p class="card-desc">Custom-designed cakes for birthdays, weddings, anniversaries, and every celebration in between. Every layer made with premium ingredients and pure love.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="card-icon">🎁</span>
+        <h3 class="card-title">Gift Curations</h3>
+        <p class="card-desc">Thoughtfully curated gift boxes and hampers tailored to any personality, occasion, or budget. We put the heart into every package.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="card-icon">🎀</span>
+        <h3 class="card-title">Decorations</h3>
+        <p class="card-desc">Stunning event setups and room transformations — from intimate dinners to grand celebrations. We turn any space into a dream scene.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="card-icon">🥘</span>
+        <h3 class="card-title">Food Trays</h3>
+        <p class="card-desc">Beautifully arranged food trays perfect for parties, gifting, and gatherings. Delicious, elegant, and always crowd-pleasing.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="card-icon">🎉</span>
+        <h3 class="card-title">Surprise Events</h3>
+        <p class="card-desc">We plan and execute surprise parties and pop-up celebrations that leave the guest of honour absolutely speechless — from start to finish.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="card-icon">🍽️</span>
+        <h3 class="card-title">Catering</h3>
+        <p class="card-desc">Full-service catering for events of all sizes. Delicious meals, professional presentation, and seamless service every time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARN / TRAINING -->
+<section id="learn" class="learn-section">
+  <div class="learn-banner reveal">
+    <div class="learn-top">
+      <div class="learn-text">
+        <h3>We Train the Next<br/>Generation of Creators</h3>
+        <p>Are you passionate about baking, gifting, or event styling? We welcome students who are ready to learn the craft, grow their skills, and build their own dream businesses.</p>
+        <span class="learn-badge">✦ Training Available ✦</span>
+      </div>
+      <a href="https://wa.me/2349032606743?text=Hello!%20I'm%20interested%20in%20learning%20at%20Bestie's%20World." class="btn-primary" target="_blank" style="flex-shrink:0;">
+        💬 Inquire Now
+      </a>
+    </div>
+
+    <!-- TRAINING PACKAGES -->
+    <div class="training-packages">
+
+      <div class="pkg-card">
+        <div class="pkg-duration">1 Month</div>
+        <div class="pkg-name">Basics</div>
+        <p class="pkg-desc">Perfect for complete beginners who want a solid introduction to the art of baking and gifting.</p>
+        <ul class="pkg-features">
+          <li>Beginner cake techniques</li>
+          <li>Basic gift wrapping</li>
+          <li>Intro to decorating</li>
+          <li>Hands-on practice sessions</li>
+        </ul>
+        <a href="https://wa.me/2349032606743?text=Hello!%20I'm%20interested%20in%20the%201-Month%20Basics%20Training%20at%20Bestie's%20World." class="pkg-cta" target="_blank">Enroll Now →</a>
+      </div>
+
+      <div class="pkg-card">
+        <div class="pkg-duration">3 Months</div>
+        <div class="pkg-name">Home Use</div>
+        <p class="pkg-desc">Learn skills to bake, decorate, and create beautiful gifts for yourself, family and friends.</p>
+        <ul class="pkg-features">
+          <li>Intermediate cake levels</li>
+          <li>DIY gift curation</li>
+          <li>Table décor basics</li>
+          <li>Food tray styling</li>
+        </ul>
+        <a href="https://wa.me/2349032606743?text=Hello!%20I'm%20interested%20in%20the%203-Month%20Home%20Use%20Training%20at%20Bestie's%20World." class="pkg-cta" target="_blank">Enroll Now →</a>
+      </div>
+
+      <div class="pkg-card featured">
+        <div class="pkg-ribbon">Popular</div>
+        <div class="pkg-duration">6 Months</div>
+        <div class="pkg-name">Advanced</div>
+        <p class="pkg-desc">Go deeper with advanced skills. Ideal for those ready to start earning and taking clients.</p>
+        <ul class="pkg-features">
+          <li>Multi-tier & themed cakes</li>
+          <li>Event styling & planning</li>
+          <li>Premium gift hampers</li>
+          <li>Catering fundamentals</li>
+          <li>Business starter guide</li>
+        </ul>
+        <a href="https://wa.me/2349032606743?text=Hello!%20I'm%20interested%20in%20the%206-Month%20Advanced%20Training%20at%20Bestie's%20World." class="pkg-cta" target="_blank">Enroll Now →</a>
+      </div>
+
+      <div class="pkg-card">
+        <div class="pkg-duration">1 Year+</div>
+        <div class="pkg-name">Professional</div>
+        <p class="pkg-desc">Full professional mentorship. Master every service we offer and launch your own successful business.</p>
+        <ul class="pkg-features">
+          <li>All services — full mastery</li>
+          <li>1-on-1 mentorship sessions</li>
+          <li>Business & branding support</li>
+          <li>Pricing & client management</li>
+          <li>Certificate of completion</li>
+          <li>Ongoing industry support</li>
+        </ul>
+        <a href="https://wa.me/2349032606743?text=Hello!%20I'm%20interested%20in%20the%201-Year%20Professional%20Training%20at%20Bestie's%20World." class="pkg-cta" target="_blank">Enroll Now →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RESERVE YOUR SPOT -->
+<section id="reserve" class="reserve-section">
+  <div class="reserve-inner reveal">
+    <span class="reserve-badge">🎀 Limited Spots Available</span>
+    <h2 class="reserve-title">Reserve Your <em>Spot</em></h2>
+    <p class="reserve-subtitle">Fill in your details below and we'll get back to you within 24 hours to confirm your booking and discuss your dream event.</p>
+
+    <div class="form-card">
+      <div id="reserveForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" id="firstName" placeholder="e.g. Amaka" />
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" id="lastName" placeholder="e.g. Johnson" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="phone" placeholder="e.g. 08012345678" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="your@email.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service Needed *</label>
+          <select id="service">
+            <option value="" disabled selected>— Select a service —</option>
+            <option>🎂 Cake Baking</option>
+            <option>🎁 Gift Curation</option>
+            <option>🎀 Decorations</option>
+            <option>🥘 Food Trays</option>
+            <option>🎉 Surprise Event Planning</option>
+            <option>🍽️ Catering</option>
+            <option>📚 Training / Learning</option>
+            <option>✨ Multiple Services</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Event Date *</label>
+            <input type="date" id="eventDate" />
+          </div>
+          <div class="form-group">
+            <label>Estimated Budget</label>
+            <select id="budget">
+              <option value="" disabled selected>— Select range —</option>
+              <option>Under ₦20,000</option>
+              <option>₦20,000 – ₦50,000</option>
+              <option>₦50,000 – ₦100,000</option>
+              <option>₦100,000 – ₦250,000</option>
+              <option>₦250,000+</option>
+              <option>Let's discuss</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tell Us About Your Event</label>
+          <textarea id="details" placeholder="Describe your event, theme, number of guests, or any special requests…"></textarea>
+        </div>
+        <button class="submit-btn" onclick="handleSubmit()">✨ Reserve My Spot Now</button>
+        <p class="form-note">🔒 Your details are safe with us. No spam, ever.</p>
+      </div>
+
+      <div class="success-msg" id="successMsg">
+        <div class="check">🎉</div>
+        <h3>Spot Reserved!</h3>
+        <p>Thank you! We've received your details and will reach out within 24 hours via WhatsApp or phone to confirm your booking.<br/><br/>Get ready for something beautiful. 💙🩷✨</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="divider reveal" style="padding-top:0; margin-bottom:44px;">
+    <div class="divider-line"><span class="divider-icon">💬</span></div>
+    <h2>Let's Create Something Beautiful</h2>
+    <p>Reach us directly — we'd love to hear from you</p>
+  </div>
+  <div class="reveal">
+    <a href="https://wa.me/2349032606743?text=Hello%20Bestie's%20World%2C%20I'd%20like%20to%20make%20an%20enquiry!" class="wa-btn" target="_blank">
+      <svg class="wa-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="16" fill="#25D366"/>
+        <path d="M23.5 8.5C21.6 6.6 19.1 5.5 16.4 5.5C10.9 5.5 6.4 10 6.4 15.5C6.4 17.3 6.9 19.1 7.8 20.6L6.3 26L11.8 24.5C13.3 25.3 15 25.8 16.7 25.8H16.8C22.3 25.8 26.8 21.3 26.8 15.8C26.5 13.1 25.4 10.4 23.5 8.5ZM16.4 24.1C14.9 24.1 13.4 23.6 12.2 22.8L11.9 22.6L8.7 23.5L9.6 20.4L9.3 20.1C8.4 18.8 7.9 17.2 7.9 15.6C7.9 10.9 11.7 7.1 16.5 7.1C18.8 7.1 20.9 8 22.5 9.6C24.1 11.2 25 13.3 25 15.6C24.9 20.3 21.1 24.1 16.4 24.1ZM21.1 17.8C20.8 17.6 19.4 16.9 19.1 16.8C18.8 16.7 18.6 16.6 18.4 16.9C18.2 17.2 17.7 17.8 17.5 18C17.3 18.2 17.1 18.2 16.8 18.1C16.5 17.9 15.6 17.6 14.5 16.6C13.7 15.9 13.1 15 12.9 14.7C12.7 14.4 12.9 14.3 13.1 14.1C13.3 13.9 13.5 13.7 13.7 13.5C13.8 13.3 13.9 13.2 14 13C14.1 12.8 14 12.6 13.9 12.5C13.8 12.3 13.2 10.9 12.9 10.3C12.7 9.7 12.4 9.8 12.2 9.8C12 9.8 11.8 9.8 11.6 9.8C11.4 9.8 11.1 9.9 10.8 10.2C10.5 10.5 9.8 11.2 9.8 12.6C9.8 14 10.8 15.3 11 15.5C11.2 15.7 13.1 18.7 16.1 19.9C16.8 20.2 17.4 20.4 17.9 20.5C18.6 20.7 19.2 20.7 19.7 20.6C20.3 20.5 21.4 19.9 21.7 19.2C22 18.5 22 17.9 21.9 17.8C21.7 17.8 21.4 17.7 21.1 17.8Z" fill="white"/>
+      </svg>
+      Chat with us on WhatsApp
+    </a>
+    <p style="margin-top:22px; font-family:'DM Sans'; font-size:0.9rem; color:#6070b0;">📞 +234 903 260 6743</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <strong>Bestie's World</strong> — Cakes · Gifts · Décor · Catering · Surprise Events · Training</p>
+  <p style="margin-top:8px;">Made with 💙🩷✨ · <a href="https://wa.me/2349032606743">Contact Us</a></p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(r => obs.observe(r));
+
+  // Reserve form
+  function handleSubmit() {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const service   = document.getElementById('service').value;
+    const eventDate = document.getElementById('eventDate').value;
+    const email     = document.getElementById('email').value.trim();
+    const budget    = document.getElementById('budget').value;
+    const details   = document.getElementById('details').value.trim();
+
+    if (!firstName || !lastName || !phone || !service || !eventDate) {
+      alert('Please fill in all required fields marked with *');
+      return;
+    }
+    const msg = `Hello Bestie's World! 🎉 I'd like to reserve a spot.\n\n👤 Name: ${firstName} ${lastName}\n📞 Phone: ${phone}\n📧 Email: ${email || 'Not provided'}\n🎀 Service: ${service}\n📅 Event Date: ${eventDate}\n💰 Budget: ${budget || 'Not specified'}\n📝 Details: ${details || 'None'}\n\nPlease confirm my reservation. Thank you!`;
+    const waUrl = `https://wa.me/2349032606743?text=${encodeURIComponent(msg)}`;
+    document.getElementById('reserveForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    setTimeout(() => window.open(waUrl, '_blank'), 800);
+  }
+
+  // Min date = today
+  const di = document.getElementById('eventDate');
+  if (di) di.setAttribute('min', new Date().toISOString().split('T')[0]);
+</script>
+</body>
+</html>
